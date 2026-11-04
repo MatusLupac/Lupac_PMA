@@ -1,79 +1,71 @@
 import { StatusBar } from 'expo-status-bar';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, FlatList} from 'react-native';
-import Item from "./src/components/Item"
+
+
+
 export default function App() {
+  const [counter, setCounter] = useState(0);
 
-  const [inputText, setInputText] = useState('');
-  const [taskList, setTaskList] = useState([]);
-
-  function inputTextHandler (text) {
-    setInputText(text);
+  function handleAdd(){
+    setCounter(counter + 1);
   }
 
-  function addTaskHandler () {
-    let id = "id" + Math.random().toString(16).slice(2)
-    setTaskList((currentTaskList) => [...currentTaskList, {id: id, title: inputText, done: false}]);
+  function handleMin(){
+    setCounter(counter -1);
   }
-
+  
   return (
     <View style={styles.container}>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Zadaj ulohu:"
-          onChangeText={inputTextHandler}
-        />
-        <Button title="ADD" onPress={addTaskHandler} />
-      </View>
-
-      <FlatList
-        data={taskList}
-        renderItem={({ item }) => <Item title={item.title} />}
-        keyExtractor={(item) => item.id}
-      />
+      <Text>Počítadlo objednávok</Text>
+      <Text style= {counter >= 5 ? styles.counterWarning : styles.counter}>{counter}</Text>
+      <View style={styles.tlacidla}>
+      <Pressable onPress={handleMin} disabled={counter === 0}>
+        <Text>-</Text>
+      </Pressable>
+      <Pressable onPress={handleAdd} disabled={counter >= 5}>
+        <Text>+</Text>
+      </Pressable>
+      <Pressable onPress={() => setCounter(0)}>
+        <Text style={styles.text}>Vynuluj</Text>
+      </Pressable>
+        </View>
+      {counter >= 5 && <Text>Dosiahnutý limit</Text>}
       <StatusBar style="auto" />
     </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container:{
     flex: 1,
-    backgroundColor: '#d2c8c8',
-    padding: 20,
-    paddingTop: 60,
-  },
-
-  inputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
-    paddingHorizontal: 12,
-  },
-
-  input: {
-    borderColor: '#000',
-    flex: 1,
-    borderWidth: 1.65,
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 5,
-  },
-
-  taskContainer: {
-    flex: 4,
-    padding: 5,
-    borderTopWidth: 3,
-  },
-
-  taskItem: {
+    justifyContent: 'center',  },
+  tlacidla: {
     flexDirection: 'row',
+    gap: 20,
+    marginTop: 20,
+    fontSize: 40,
+    fontWeight: 'bold',
+    backgroundColor: 'blue',
     padding: 10,
-    backgroundColor: '#e4fbfb',
-    marginVertical: 2,
-    borderRadius: 10,
+    borderRadius: 2,
+  },
+  counter:{
+    fontSize: 60, fontWeight: "bold"
+  },
+  counterWarning: {
+    fontSize: 60,
+    fontWeight: "bold",
+    color: '#ff0000'
+  },
+  text: {
+    color: '#ffffff',
+    fontSize: 40,
+    fontWeight: 'bold',
+    backgroundColor: '#000000',
+    padding: 10,
+    borderRadius: 5,
   },
 });
